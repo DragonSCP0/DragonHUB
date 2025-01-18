@@ -1,1 +1,207 @@
 
+--[[ 
+    Dragon HUB - Interface para Blox Fruits
+    Desenvolvido para facilitar o uso de funções famosas.
+    Criação de uma interface gráfica (UI) elegante e bem organizada.
+--]]
+
+-- Serviços do Roblox
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local VirtualUser = game:GetService("VirtualUser")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- Variáveis globais
+local LocalPlayer = Players.LocalPlayer
+local DragonHub = Instance.new("ScreenGui")
+local UIComponents = {}
+
+-- Criar GUI principal
+DragonHub.Name = "DragonHub"
+DragonHub.Parent = game.CoreGui
+DragonHub.ResetOnSpawn = false
+
+-- Container principal
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = DragonHub
+MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+MainFrame.Size = UDim2.new(0, 600, 0, 400)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+MainFrame.BorderSizePixel = 0
+MainFrame.Visible = true
+
+-- UI Estética
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = MainFrame
+
+-- Título
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.Parent = MainFrame
+Title.Text = "Dragon HUB - Blox Fruits"
+Title.Size = UDim2.new(1, 0, 0, 50)
+Title.BackgroundTransparency = 1
+Title.Font = Enum.Font.GothamBold
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 20
+
+-- Aba de menus
+local TabMenu = Instance.new("Frame")
+TabMenu.Name = "TabMenu"
+TabMenu.Parent = MainFrame
+TabMenu.Size = UDim2.new(0, 150, 1, -50)
+TabMenu.Position = UDim2.new(0, 0, 0, 50)
+TabMenu.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+
+local TabUICorner = Instance.new("UICorner")
+TabUICorner.CornerRadius = UDim.new(0, 8)
+TabUICorner.Parent = TabMenu
+
+-- Função para criar botões de abas
+local function CreateTabButton(name)
+    local Button = Instance.new("TextButton")
+    Button.Name = name
+    Button.Parent = TabMenu
+    Button.Size = UDim2.new(1, 0, 0, 40)
+    Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Button.Text = name
+    Button.Font = Enum.Font.Gotham
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Button.TextSize = 16
+
+    local ButtonUICorner = Instance.new("UICorner")
+    ButtonUICorner.CornerRadius = UDim.new(0, 4)
+    ButtonUICorner.Parent = Button
+
+    Button.MouseEnter:Connect(function()
+        Button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    end)
+
+    Button.MouseLeave:Connect(function()
+        Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    end)
+
+    return Button
+end
+
+-- Função para criar o conteúdo da aba
+local function CreateTabContent(name)
+    local TabContent = Instance.new("Frame")
+    TabContent.Name = name .. "Content"
+    TabContent.Parent = MainFrame
+    TabContent.Size = UDim2.new(1, -150, 1, -50)
+    TabContent.Position = UDim2.new(0, 150, 0, 50)
+    TabContent.BackgroundTransparency = 1
+    TabContent.Visible = false
+    return TabContent
+end
+
+-- Adicionar abas
+local Tabs = {
+    "Farm",
+    "Teleport",
+    "Auto Stats",
+    "PvP",
+    "Misc",
+    "Missões" -- Adicionando a aba Missões
+}
+
+for _, tab in ipairs(Tabs) do
+    local Button = CreateTabButton(tab)
+    local TabContent = CreateTabContent(tab)
+
+    -- Alternar visibilidade do conteúdo
+    Button.MouseButton1Click:Connect(function()
+        for _, content in ipairs(MainFrame:GetChildren()) do
+            if content:IsA("Frame") and content.Name:find("Content") then
+                content.Visible = false
+            end
+        end
+        TabContent.Visible = true
+    end)
+end
+
+-- Tabela de missões com suas coordenadas, NPCs e requisitos de nível
+local missao_coords = {
+    ["Pirate Starter Island"] = {min_level = 1, coord = Vector3.new(100, 0, 50), npc_missao = "Pirate NPC", npc_eliminar = "Pirate Boss"},
+    ["Marine Starter Island"] = {min_level = 1, coord = Vector3.new(200, 0, 50), npc_missao = "Marine NPC", npc_eliminar = "Marine Boss"},
+    -- Adicione outras missões aqui...
+}
+
+-- Função para encontrar a missão com base no nível do jogador
+local function encontrar_missao(nivel_jogador)
+    for nome_missao, dados in pairs(missao_coords) do
+        if nivel_jogador >= dados.min_level then
+            print("Missão:", nome_missao)
+            print("Coordenadas:", dados.coord)
+            print("NPC da Missão:", dados.npc_missao)
+            print("NPC a Eliminar:", dados.npc_eliminar)
+            return dados.coord, dados.npc_missao, dados.npc_eliminar
+        end
+    end
+    return Vector3.new(0, 0, 0), nil, nil -- Se não encontrar missão
+end
+
+-- Função de movimentação automática
+local function mover_para(coordenada)
+    -- Código para mover o personagem para a coordenada fornecida...
+end
+
+-- Função de auto-click (atacar NPC de forma aleatória para evitar detecção)
+local function auto_click(npc)
+    -- Código para realizar ataques automáticos no NPC...
+end
+
+-- Função principal de missão
+local function executar_missao()
+    local nivel_do_jogador = 35 -- Nível do jogador (pode ser dinâmico dependendo da implementação)
+    
+    -- Encontrar missão com base no nível do jogador
+    local coordenada, npc_missao, npc_eliminar = encontrar_missao(nivel_do_jogador)
+    print("Coordenada da missão:", coordenada)
+    print("NPC da missão:", npc_missao)
+    print("NPC a eliminar:", npc_eliminar)
+
+    if coordenada and npc_missao and npc_eliminar then
+        -- Movendo para o local da missão
+        mover_para(coordenada)
+
+        -- Encontrando o NPC a ser derrotado no jogo
+        local npc_obj = workspace:FindFirstChild(npc_eliminar)
+        
+        if npc_obj then
+            -- Iniciar ataque automático no NPC
+            auto_click(npc_obj)
+        else
+            print("NPC não encontrado para eliminar!")
+        end
+    else
+        print("Missão não encontrada para este nível!")
+    end
+end
+
+-- Exemplo de conteúdo da aba Missões
+local MissaoContent = MainFrame:FindFirstChild("MissõesContent")
+if MissaoContent then
+    local MissionButton = Instance.new("TextButton")
+    MissionButton.Name = "StartMission"
+    MissionButton.Parent = MissaoContent
+    MissionButton.Size = UDim2.new(0, 200, 0, 40)
+    MissionButton.Position = UDim2.new(0, 20, 0, 20)
+    MissionButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    MissionButton.Text = "Iniciar Missão"
+    MissionButton.Font = Enum.Font.Gotham
+    MissionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    MissionButton.TextSize = 16
+
+    MissionButton.MouseButton1Click:Connect(function()
+        print("Iniciando missão...")
+        executar_missao()
+    end)
+end
+
+print("Dragon HUB carregado com sucesso!")
