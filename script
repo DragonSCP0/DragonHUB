@@ -1,4 +1,3 @@
-
 --[[ 
     Dragon HUB - Interface para Blox Fruits
     Desenvolvido para facilitar o uso de funções famosas.
@@ -148,17 +147,24 @@ end
 
 -- Função de movimentação automática
 local function mover_para(coordenada)
-    -- Código para mover o personagem para a coordenada fornecida...
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(coordenada)
+    end
 end
 
 -- Função de auto-click (atacar NPC de forma aleatória para evitar detecção)
 local function auto_click(npc)
-    -- Código para realizar ataques automáticos no NPC...
+    if npc and npc:FindFirstChild("Humanoid") then
+        while true do
+            npc.Humanoid:TakeDamage(10)  -- Ajuste o dano conforme necessário
+            wait(1)  -- Intervalo entre os ataques
+        end
+    end
 end
 
 -- Função principal de missão
 local function executar_missao()
-    local nivel_do_jogador = 35 -- Nível do jogador (pode ser dinâmico dependendo da implementação)
+    local nivel_do_jogador = LocalPlayer.Data and LocalPlayer.Data.Level.Value or 35  -- Nível do jogador
     
     -- Encontrar missão com base no nível do jogador
     local coordenada, npc_missao, npc_eliminar = encontrar_missao(nivel_do_jogador)
