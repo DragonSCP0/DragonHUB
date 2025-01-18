@@ -147,24 +147,17 @@ end
 
 -- Função de movimentação automática
 local function mover_para(coordenada)
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(coordenada)
-    end
+    -- Código para mover o personagem para a coordenada fornecida...
 end
 
 -- Função de auto-click (atacar NPC de forma aleatória para evitar detecção)
 local function auto_click(npc)
-    if npc and npc:FindFirstChild("Humanoid") then
-        while true do
-            npc.Humanoid:TakeDamage(10)  -- Ajuste o dano conforme necessário
-            wait(1)  -- Intervalo entre os ataques
-        end
-    end
+    -- Código para realizar ataques automáticos no NPC...
 end
 
 -- Função principal de missão
 local function executar_missao()
-    local nivel_do_jogador = LocalPlayer.Data and LocalPlayer.Data.Level.Value or 35  -- Nível do jogador
+    local nivel_do_jogador = 35 -- Nível do jogador (pode ser dinâmico dependendo da implementação)
     
     -- Encontrar missão com base no nível do jogador
     local coordenada, npc_missao, npc_eliminar = encontrar_missao(nivel_do_jogador)
